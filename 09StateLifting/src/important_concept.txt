@@ -1,0 +1,295 @@
+How does React actually render the page? 
+
+Step 1 — main.jsx
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import './index.css'
+import App from './App.jsx'
+
+createRoot(document.getElementById('root')).render(
+  <StrictMode>
+    <App />
+  </StrictMode>,
+)
+
+
+Step 2 — The Project Structure
+src
+│
+├── main.jsx
+├── App.jsx
+├── Counter.jsx
+├── Greeting.jsx
+└── ...
+
+
+Think of it like this:
+main.jsx
+      │
+      ▼
+App.jsx
+      │
+      ▼
+Other Components
+
+main.jsx is the entry point of your React application.
+It is the first JavaScript file that runs.
+
+
+
+Step 3 — Where does React display the page?
+Now open index.html.
+We'll find something like:
+<body>
+
+    <div id="root"></div>
+
+    <script type="module" src="/src/main.jsx"></script>
+
+</body>
+
+
+Notice this:
+<div id="root"></div>
+This div is initially empty.
+
+
+When the browser first loads the page:
+<body>
+
+    <div id="root"></div>
+
+</body>
+
+Nothing is inside it.
+
+
+
+Step 4 — What does document.getElementById("root") do?
+document.getElementById("root")
+It simply finds this HTML element:
+<div id="root"></div>
+
+Nothing more.
+So React now knows:
+"This is where I should display my application."
+
+
+Step 5 — What is createRoot()?
+Now look at:
+createRoot(document.getElementById("root"))
+
+Imagine the HTML is a house.
+<div id="root"></div>
+
+This is an empty room.
+
+createRoot() tells React:
+"Take control of this room."
+
+Before React:
+<div id="root"></div>
+
+After createRoot():
+React now manages everything inside this div.
+
+This doesn't display anything yet.
+It just prepares the container.
+
+
+
+Step 6 — What does .render() do?
+Now we have:
+createRoot(document.getElementById("root")).render(
+    <App />
+)
+
+This is the important part.
+render() means: "Display this component."
+
+Here: <App />
+is your root component.
+
+So React says:
+Take App component
+
+↓
+
+Convert JSX into HTML
+
+↓
+
+Put it inside
+<div id="root">
+
+
+Visual Flow
+Browser loads
+        │
+        ▼
+index.html
+        │
+        ▼
+<div id="root"></div>
+        │
+        ▼
+main.jsx runs
+        │
+        ▼
+createRoot(root)
+        │
+        ▼
+render(<App />)
+        │
+        ▼
+React renders App
+        │
+        ▼
+Browser displays the page
+
+
+
+Step 7 — What if App returns this?
+Suppose your App.jsx is:
+function App() {
+    return (
+        <>
+            <h1>Hello Sayan</h1>
+            <p>Learning React</p>
+        </>
+    );
+}
+
+export default App;
+
+
+React converts it into something like:
+<div id="root">
+    <h1>Hello Sayan</h1>
+    <p>Learning React</p>
+</div>
+Now the browser can display it.
+
+
+Step 8 — What happens when state changes?
+Suppose:
+const [count, setCount] = useState(0);
+
+Initially:
+Count: 0
+
+When you click:
+setCount(count + 1);
+
+React doesn't reload the page.
+Instead:
+State changes
+        │
+        ▼
+App re-renders
+        │
+        ▼
+React compares the new UI with the previous UI
+        │
+        ▼
+Only the changed parts are updated
+
+
+So if only this changes:
+Count: 0
+to
+Count: 1
+
+React updates only that text.
+It doesn't rebuild the whole page.
+That's one of the reasons React is fast.
+
+
+
+Step 9 — What about child components?
+Suppose:
+function App() {
+    return (
+        <>
+            <Counter />
+            <Greeting />
+        </>
+    );
+}
+
+
+The rendering flow becomes:
+main.jsx
+      │
+      ▼
+<App />
+      │
+      ├─────────────┐
+      ▼             ▼
+<Counter />   <Greeting />
+React starts with App, then renders every child component that App returns.
+
+
+
+
+Q1. What is the purpose of main.jsx?
+the main.jsx is the main file which is the entry point of a react application.
+it is the first javascript that runs.
+
+it basically take the app component
+convert jsx into html
+and put it inside div whose id is root
+
+
+Q2. What does createRoot(document.getElementById("root")) do?
+document.getElementById("root")
+Find the HTML element.
+
+Then
+createRoot(...)
+does this: "Take control of this HTML element."
+
+A Simple Analogy
+document.getElementById("root")
+
+↓
+
+Find the room
+
+createRoot()
+
+↓
+
+React enters the room
+
+render()
+
+↓
+
+React starts placing furniture inside the room
+
+
+
+
+Q3. What does .render(<App />) do?
+.render(<App />)
+does this: 
+
+Take the App component
+
+↓
+
+Convert JSX
+
+↓
+
+Display it inside
+
+<div id="root">
+
+
+
+
+Q4. When you call setCount(count + 1), does React reload the entire page? If not, what does it do instead?
+react does not reload the entire page instead it only updates that part which we want
+react compares the new ui with the previous ui
